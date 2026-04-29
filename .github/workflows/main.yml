@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI-CD
 on: [push]
 jobs:
   build-and-test:
@@ -8,9 +8,8 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - run: dotnet test devops/devops.csproj --configuration Release
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-      - run: curl -f "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+      - name: Run Tests
+        run: dotnet test devops/devops.csproj --configuration Release
+      - name: Deploy to Render
+        # We removed the quotes and flags to make it as simple as possible
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
